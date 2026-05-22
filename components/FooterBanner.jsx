@@ -12,6 +12,7 @@ const FooterBanner = ({ heroBanner }) => {
     largeText2,
     saleTime,
     smallText,
+    midText,
     desc,
     buttonText,
     image,
@@ -30,10 +31,9 @@ const FooterBanner = ({ heroBanner }) => {
           <h3>{largeText2}</h3>
           <p>{saleTime}</p>
         </div>
-
         <div className="right">
           <p>{smallText}</p>
-          <h3>{product}</h3>
+          <h3>{midText}</h3>
           <p className="company-desc">{desc}</p>
           <Link href={href}>
             <button type="button">{buttonText}</button>
@@ -44,8 +44,8 @@ const FooterBanner = ({ heroBanner }) => {
           <Image
             src={imageUrl}
             alt={product || 'Footer banner'}
-            width={350}
-            height={350}
+            width={500}
+            height={500}
             className="footer-banner-image"
           />
         ) : null}
