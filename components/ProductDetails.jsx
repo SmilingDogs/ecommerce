@@ -1,9 +1,15 @@
 'use client';
 
+import { useStateContext } from '@/context/StateContext';
 import { useState } from 'react';
 
 import Image from 'next/image';
-import { AiFillStar, AiOutlineMinus, AiOutlinePlus, AiOutlineStar } from 'react-icons/ai';
+import {
+  AiFillStar,
+  AiOutlineMinus,
+  AiOutlinePlus,
+  AiOutlineStar,
+} from 'react-icons/ai';
 
 import { Product } from '@/components';
 import { urlFor } from '@/sanity_ecommerce/lib/image';
@@ -11,25 +17,17 @@ import { urlFor } from '@/sanity_ecommerce/lib/image';
 const ProductDetails = ({ product, relatedProducts }) => {
   const { image = [], name, details, price } = product;
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [qty, setQty] = useState(1);
+  const { qty, onAdd, incQty, decQty } = useStateContext();
 
   const selectedImage = image[selectedImageIndex] || image[0];
   const selectedImageUrl = selectedImage ? urlFor(selectedImage).url() : '';
 
-  const decQty = () => {
-    setQty((currentQty) => Math.max(1, currentQty - 1));
-  };
-
-  const incQty = () => {
-    setQty((currentQty) => currentQty + 1);
-  };
-
   const handleAddToCart = () => {
-    console.log('Add to cart:', { product, qty });
+    onAdd(product, qty);
   };
 
   const handleBuyNow = () => {
-    console.log('Buy now:', { product, qty });
+    onAdd(product, qty);
   };
 
   return (
@@ -59,7 +57,9 @@ const ProductDetails = ({ product, relatedProducts }) => {
                   <button
                     key={`${product._id}-${index}`}
                     type="button"
-                    className={isSelected ? 'small-image selected-image' : 'small-image'}
+                    className={
+                      isSelected ? 'small-image selected-image' : 'small-image'
+                    }
                     onClick={() => setSelectedImageIndex(index)}
                     onMouseEnter={() => setSelectedImageIndex(index)}
                     aria-label={`Show image ${index + 1} for ${name}`}
@@ -80,13 +80,11 @@ const ProductDetails = ({ product, relatedProducts }) => {
         <div className="product-detail-desc">
           <h1>{name}</h1>
           <div className="reviews">
-            <div>
-              <AiFillStar />
-              <AiFillStar />
-              <AiFillStar />
-              <AiFillStar />
-              <AiOutlineStar />
-            </div>
+            <AiFillStar />
+            <AiFillStar />
+            <AiFillStar />
+            <AiFillStar />
+            <AiOutlineStar />
             <p>(20)</p>
           </div>
           <h4>Details: </h4>
@@ -95,17 +93,31 @@ const ProductDetails = ({ product, relatedProducts }) => {
           <div className="quantity">
             <h3>Quantity:</h3>
             <div className="quantity-desc">
-              <button type="button" className="minus" onClick={decQty} aria-label="Decrease quantity">
+              <button
+                type="button"
+                className="minus"
+                onClick={decQty}
+                aria-label="Decrease quantity"
+              >
                 <AiOutlineMinus />
               </button>
               <span className="num">{qty}</span>
-              <button type="button" className="plus" onClick={incQty} aria-label="Increase quantity">
+              <button
+                type="button"
+                className="plus"
+                onClick={incQty}
+                aria-label="Increase quantity"
+              >
                 <AiOutlinePlus />
               </button>
             </div>
           </div>
           <div className="buttons">
-            <button type="button" className="add-to-cart" onClick={handleAddToCart}>
+            <button
+              type="button"
+              className="add-to-cart"
+              onClick={handleAddToCart}
+            >
               Add to Cart
             </button>
             <button type="button" className="buy-now" onClick={handleBuyNow}>

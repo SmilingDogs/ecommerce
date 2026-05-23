@@ -1,21 +1,25 @@
 'use client';
 
+import { useStateContext } from '@/context/StateContext';
 import Link from 'next/link';
 import { AiOutlineShopping } from 'react-icons/ai';
 
 const Navbar = () => {
-  const logSomething = () => {
-    console.log('click');
+  const { totalQuantities, setShowCart } = useStateContext();
+
+  const handleCartClick = () => {
+    setShowCart(true);
   };
+
   return (
     <div className="navbar-container">
       <p className="logo">
-        <Link href="/">Headphones</Link>
+        <Link href="/">SmilingDog&apos;s Headphones</Link>
       </p>
 
-      <button type="button" className="cart-icon" onClick={logSomething}>
+      <button type="button" className="cart-icon" onClick={handleCartClick}>
         <AiOutlineShopping />
-        <span className="cart-item-qty">2</span>
+        <span className="cart-item-qty">{totalQuantities}</span>
       </button>
     </div>
   );
