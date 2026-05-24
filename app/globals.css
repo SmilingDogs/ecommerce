@@ -334,6 +334,9 @@ span.text-red {
   margin: 40px;
   text-align: center;
 }
+.empty-cart svg {
+  margin: 0 auto;
+}
 .empty-cart h3 {
   font-weight: 600;
   font-size: 20px;
@@ -361,6 +364,7 @@ span.text-red {
 .item-desc .flex {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   width: 350px;
   color: #324d67;
 }

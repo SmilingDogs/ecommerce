@@ -1,3 +1,4 @@
+'use client';
 import { createContext, useContext, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
@@ -53,27 +54,35 @@ export const StateContext = ({ children }) => {
       (prevTotalQuantities) => prevTotalQuantities - findProductInCart.quantity
     );
     setCartItems(newCartItems);
-    setQty(1);
   };
 
   const toggleCartItemQuanitity = (id, value) => {
     let foundProduct = cartItems.find((item) => item._id === id);
-    // let index = cartItems.findIndex((product) => product._id === id);
-    const newCartItems = cartItems.filter((item) => item._id !== id);
+    let foundProductIndex = cartItems.findIndex(
+      (product) => product._id === id
+    );
+
+    function updateCartItem(cartItems, foundIndex, updates) {
+      return cartItems.map((item, i) =>
+        i === foundIndex ? { ...item, ...updates } : item
+      );
+    }
 
     if (value === 'inc') {
-      setCartItems([
-        ...newCartItems,
-        { ...foundProduct, quantity: foundProduct.quantity + 1 },
-      ]);
+      setCartItems(
+        updateCartItem(cartItems, foundProductIndex, {
+          quantity: foundProduct.quantity + 1,
+        })
+      );
       setTotalPrice((prevTotalPrice) => prevTotalPrice + foundProduct.price);
       setTotalQuantities((prevTotalQuantities) => prevTotalQuantities + 1);
     } else if (value === 'dec') {
       if (foundProduct.quantity > 1) {
-        setCartItems([
-          ...newCartItems,
-          { ...foundProduct, quantity: foundProduct.quantity - 1 },
-        ]);
+        setCartItems(
+          updateCartItem(cartItems, foundProductIndex, {
+            quantity: foundProduct.quantity - 1,
+          })
+        );
         setTotalPrice((prevTotalPrice) => prevTotalPrice - foundProduct.price);
         setTotalQuantities((prevTotalQuantities) => prevTotalQuantities - 1);
       }
