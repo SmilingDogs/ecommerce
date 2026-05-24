@@ -32,6 +32,12 @@ const product = {
       type: 'number',
     },
     { 
+      name: 'stripeId',
+      title: 'Stripe Price ID',
+      type: 'string',
+      description: 'Stripe Price ID (e.g., price_1234). Get this from your Stripe dashboard.',
+    },
+    { 
       name: 'details',
       title: 'Details',
       type: 'string',

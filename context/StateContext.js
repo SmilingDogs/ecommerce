@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
 const Context = createContext();
@@ -10,6 +10,30 @@ export const StateContext = ({ children }) => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalQuantities, setTotalQuantities] = useState(0);
   const [qty, setQty] = useState(1);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    const savedCart = localStorage.getItem('cart');
+    const savedTotalPrice = localStorage.getItem('totalPrice');
+    const savedTotalQuantities = localStorage.getItem('totalQuantities');
+
+    if (savedCart) {
+      setCartItems(JSON.parse(savedCart));
+      setTotalPrice(parseFloat(savedTotalPrice) || 0);
+      setTotalQuantities(parseInt(savedTotalQuantities) || 0);
+    }
+    setIsInitialized(true);
+  }, []);
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    if (isInitialized) {
+      localStorage.setItem('cart', JSON.stringify(cartItems));
+      localStorage.setItem('totalPrice', totalPrice.toString());
+      localStorage.setItem('totalQuantities', totalQuantities.toString());
+    }
+  }, [cartItems, totalPrice, totalQuantities, isInitialized]);
 
   const onAdd = (product, quantity) => {
     const checkProductInCart = cartItems.find(

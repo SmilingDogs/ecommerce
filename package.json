@@ -2,17 +2,20 @@
   "name": "ecommerce",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "sanity": "sanity"
+    "sanity": "sanity",
+    "sync:stripe": "node scripts/sync-products-to-stripe.js"
   },
   "dependencies": {
     "@sanity/client": "^7.22.0",
     "@sanity/image-url": "^2.1.1",
     "@sanity/vision": "^5.26.0",
+    "@stripe/stripe-js": "^9.6.0",
     "canvas-confetti": "^1.9.4",
     "next": "^16.2.6",
     "next-sanity": "^12.4.5",
@@ -22,11 +25,13 @@
     "react-hot-toast": "^2.6.0",
     "react-icons": "^5.6.0",
     "sanity": "^5.26.0",
+    "stripe": "^22.1.1",
     "styled-components": "^6.4.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "babel-plugin-react-compiler": "1.0.0",
+    "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "prettier": "^3.8.3",
