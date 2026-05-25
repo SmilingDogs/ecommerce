@@ -10,6 +10,7 @@ import {
   AiOutlinePlus,
   AiOutlineShopping,
 } from 'react-icons/ai';
+import { MdOutlineInfo } from 'react-icons/md';
 import { TiDeleteOutline } from 'react-icons/ti';
 
 const Cart = () => {
@@ -139,6 +140,10 @@ const Cart = () => {
               <button type="button" className="btn" onClick={handleCheckout}>
                 Pay with Stripe
               </button>
+            </div>
+            <div className="payment-info">
+              <MdOutlineInfo size={20} />
+              <p>Use card 4242 4242 4242 4242 for payment imitation</p>
             </div>
           </div>
         )}

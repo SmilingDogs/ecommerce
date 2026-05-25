@@ -8,8 +8,8 @@
 
 import dotenv from 'dotenv';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import Stripe from 'stripe';
+import { fileURLToPath } from 'url';
 import { client } from '../sanity_ecommerce/lib/client.js';
 
 // Load .env.local

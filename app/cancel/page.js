@@ -16,9 +16,7 @@ export default function CancelPage() {
           ✕
         </p>
         <h2>Order cancelled</h2>
-        <p className="email-msg">
-          Your order has been cancelled. Your cart items are still available.
-        </p>
+        <p className="email-msg">Your order has been cancelled.</p>
         <Link href="/">
           <button type="button" className="btn">
             Continue Shopping
