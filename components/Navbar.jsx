@@ -17,7 +17,7 @@ const Navbar = () => {
   return (
     <div className="navbar-container">
       <p className="logo">
-        <Link href="/">SmilingDog&apos;s Headphones</Link>
+        <Link href="/">SmilingDog&apos;s Gadgets</Link>
       </p>
 
       <button type="button" className="cart-icon" onClick={handleCartClick}>

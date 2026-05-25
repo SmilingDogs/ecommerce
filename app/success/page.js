@@ -1,5 +1,8 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { BsBagCheckFill } from 'react-icons/bs';
 import { stripe } from '../../lib/stripe';
+import SuccessConfetti from './SuccessConfetti';
 
 export default async function SuccessPage({ searchParams }) {
   const { session_id } = await searchParams;
@@ -57,13 +60,29 @@ export default async function SuccessPage({ searchParams }) {
     }
 
     return (
-      <section id="success">
-        <p>
-          We appreciate your purchase from us! A confirmation email will be sent
-          to {customerEmail}. If you have any questions, please email{' '}
-          <a href="mailto:orders@example.com">orders@example.com</a>.
-        </p>
-      </section>
+      <div className="success-wrapper">
+        <SuccessConfetti />
+        <div className="success">
+          <p className="icon">
+            <BsBagCheckFill />
+          </p>
+          <h2>Thank you for your order!</h2>
+          <p className="email-msg">
+            A confirmation email will be sent to {customerEmail}.
+          </p>
+          <p className="description">
+            If you have any questions, please email
+            <a className="email" href="mailto:order@example.com">
+              order@example.com
+            </a>
+          </p>
+          <Link href="/">
+            <button type="button" width="300px" className="btn">
+              Continue Shopping
+            </button>
+          </Link>
+        </div>
+      </div>
     );
   }
 }
