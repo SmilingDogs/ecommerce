@@ -1,5 +1,6 @@
 'use client';
 import { useStateContext } from '@/context/StateContext';
+import { handleCheckout } from '@/lib/handleCheckout';
 import { urlFor } from '@/sanity_ecommerce/lib/image';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -23,31 +24,6 @@ const Cart = () => {
     toggleCartItemQuanitity,
     onRemove,
   } = useStateContext();
-
-  const handleCheckout = async (e) => {
-    e.preventDefault();
-
-    // Build line items from cart
-    const lineItems = cartItems.map((item) => ({
-      price: item.stripeId, // Stripe Price ID stored in product
-      quantity: item.quantity,
-    }));
-
-    try {
-      const response = await fetch('/api/checkout_sessions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lineItems }),
-      });
-
-      const { sessionUrl } = await response.json();
-      if (sessionUrl) {
-        window.location.href = sessionUrl;
-      }
-    } catch (error) {
-      console.error('Checkout error:', error);
-    }
-  };
 
   return (
     <div className="cart-wrapper" ref={cartRef}>
@@ -137,7 +113,11 @@ const Cart = () => {
               <h3>${totalPrice}</h3>
             </div>
             <div className="btn-container">
-              <button type="button" className="btn" onClick={handleCheckout}>
+              <button
+                type="button"
+                className="btn"
+                onClick={(e) => handleCheckout(e, cartItems)}
+              >
                 Pay with Stripe
               </button>
             </div>

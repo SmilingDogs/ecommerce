@@ -1,9 +1,8 @@
 'use client';
 
 import { useStateContext } from '@/context/StateContext';
-import { useState } from 'react';
-
 import Image from 'next/image';
+import { useState } from 'react';
 import {
   AiFillStar,
   AiOutlineMinus,
@@ -12,12 +11,14 @@ import {
 } from 'react-icons/ai';
 
 import { Product } from '@/components';
+import { handleCheckout } from '@/lib/handleCheckout';
 import { urlFor } from '@/sanity_ecommerce/lib/image';
 
 const ProductDetails = ({ product, relatedProducts }) => {
   const { image = [], name, details, price } = product;
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const { qty, onAdd, incQty, decQty } = useStateContext();
+  const { qty, onAdd, incQty, decQty, cartItems, buildCurrentCart } =
+    useStateContext();
 
   const selectedImage = image[selectedImageIndex] || image[0];
   const selectedImageUrl = selectedImage ? urlFor(selectedImage).url() : '';
@@ -26,8 +27,10 @@ const ProductDetails = ({ product, relatedProducts }) => {
     onAdd(product, qty);
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = (e) => {
+    const nextCartItems = buildCurrentCart(cartItems, product, qty);
     onAdd(product, qty);
+    handleCheckout(e, nextCartItems);
   };
 
   return (

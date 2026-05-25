@@ -4,6 +4,20 @@ import { toast } from 'react-hot-toast';
 
 const Context = createContext();
 
+const buildCurrentCart = (cartItems, product, quantity) => {
+  const existingItem = cartItems.find((item) => item._id === product._id);
+
+  if (existingItem) {
+    return cartItems.map((cartItem) =>
+      cartItem._id === product._id
+        ? { ...cartItem, quantity: cartItem.quantity + quantity }
+        : cartItem
+    );
+  }
+
+  return [...cartItems, { ...product, quantity }];
+};
+
 export const StateContext = ({ children }) => {
   const [showCart, setShowCart] = useState(false);
   const [cartItems, setCartItems] = useState([]);
@@ -12,32 +26,15 @@ export const StateContext = ({ children }) => {
   const [qty, setQty] = useState(1);
 
   const onAdd = (product, quantity) => {
-    const checkProductInCart = cartItems.find(
-      (item) => item._id === product._id
-    );
-
     setTotalPrice(
       (prevTotalPrice) => prevTotalPrice + product.price * quantity
     );
     setTotalQuantities((prevTotalQuantities) => prevTotalQuantities + quantity);
-
-    if (checkProductInCart) {
-      const updatedCartItems = cartItems.map((cartItem) => {
-        if (cartItem._id === product._id)
-          return {
-            ...cartItem,
-            quantity: cartItem.quantity + quantity,
-          };
-      });
-
-      setCartItems(updatedCartItems);
-    } else {
-      product.quantity = quantity;
-
-      setCartItems([...cartItems, { ...product }]);
-    }
+    setCartItems((currentCartItems) =>
+      buildCurrentCart(currentCartItems, product, quantity)
+    );
     setQty(1);
-    toast.success(`${qty} ${product.name} added to the cart.`);
+    toast.success(`${quantity} ${product.name} added to the cart.`);
   };
 
   const onRemove = (product) => {
@@ -114,6 +111,7 @@ export const StateContext = ({ children }) => {
         setCartItems,
         setTotalPrice,
         setTotalQuantities,
+        buildCurrentCart,
       }}
     >
       {children}
