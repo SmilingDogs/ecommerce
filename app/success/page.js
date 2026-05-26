@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { BsBagCheckFill } from 'react-icons/bs';
 import { stripe } from '../../lib/stripe';
+import ClearCartOnSuccess from './ClearCartOnSuccess';
 import SuccessConfetti from './SuccessConfetti';
 
 export default async function SuccessPage({ searchParams }) {
@@ -61,6 +62,7 @@ export default async function SuccessPage({ searchParams }) {
 
     return (
       <div className="success-wrapper">
+        <ClearCartOnSuccess />
         <SuccessConfetti />
         <div className="success">
           <p className="icon">

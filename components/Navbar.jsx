@@ -6,13 +6,7 @@ import { AiOutlineShopping } from 'react-icons/ai';
 import { Cart } from '.';
 
 const Navbar = () => {
-  const { totalQuantities, showCart, setShowCart, cartItems } =
-    useStateContext();
-
-  const handleCartClick = () => {
-    setShowCart(true);
-    console.log(cartItems);
-  };
+  const { totalQuantities, showCart, setShowCart } = useStateContext();
 
   return (
     <div className="navbar-container">
@@ -20,7 +14,11 @@ const Navbar = () => {
         <Link href="/">SmilingDog&apos;s Gadgets</Link>
       </p>
 
-      <button type="button" className="cart-icon" onClick={handleCartClick}>
+      <button
+        type="button"
+        className="cart-icon"
+        onClick={() => setShowCart(true)}
+      >
         <AiOutlineShopping />
         <span className="cart-item-qty">{totalQuantities}</span>
       </button>

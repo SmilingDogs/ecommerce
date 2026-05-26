@@ -1,8 +1,9 @@
 'use client';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
 const Context = createContext();
+const CART_STORAGE_KEY = 'ecommerce-cart';
 
 const buildCurrentCart = (cartItems, product, quantity) => {
   const existingItem = cartItems.find((item) => item._id === product._id);
@@ -18,12 +19,89 @@ const buildCurrentCart = (cartItems, product, quantity) => {
   return [...cartItems, { ...product, quantity }];
 };
 
+const calculateCartTotals = (cartItems) =>
+  cartItems.reduce(
+    (totals, item) => ({
+      totalPrice: totals.totalPrice + item.price * item.quantity,
+      totalQuantities: totals.totalQuantities + item.quantity,
+    }),
+    { totalPrice: 0, totalQuantities: 0 }
+  );
+
+const normalizeCartItems = (cartItems) =>
+  cartItems.filter(Boolean).map((item) => ({
+    ...item,
+    quantity: Math.max(1, Number(item.quantity) || 1),
+  }));
+
 export const StateContext = ({ children }) => {
   const [showCart, setShowCart] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalQuantities, setTotalQuantities] = useState(0);
   const [qty, setQty] = useState(1);
+  const [hasHydratedCart, setHasHydratedCart] = useState(false);
+
+  const syncCartState = useCallback((nextCartItems) => {
+    const normalizedCartItems = normalizeCartItems(nextCartItems);
+    const nextTotals = calculateCartTotals(normalizedCartItems);
+
+    setCartItems(normalizedCartItems);
+    setTotalPrice(nextTotals.totalPrice);
+    setTotalQuantities(nextTotals.totalQuantities);
+  }, []);
+
+  const clearCart = useCallback(() => {
+    setCartItems([]);
+    setTotalPrice(0);
+    setTotalQuantities(0);
+    setShowCart(false);
+    window.localStorage.removeItem(CART_STORAGE_KEY);
+  }, []);
+
+  useEffect(() => {
+    const hydrateCart = () => {
+      try {
+        const savedCart = window.localStorage.getItem(CART_STORAGE_KEY);
+
+        if (!savedCart) {
+          return;
+        }
+
+        const parsedCart = JSON.parse(savedCart);
+        const storedCartItems = Array.isArray(parsedCart?.cartItems)
+          ? parsedCart.cartItems
+          : [];
+
+        syncCartState(storedCartItems);
+      } catch (error) {
+        console.error('Unable to restore cart state:', error);
+        window.localStorage.removeItem(CART_STORAGE_KEY);
+      } finally {
+        setHasHydratedCart(true);
+      }
+    };
+
+    const hydrateTimeoutId = window.setTimeout(hydrateCart, 0);
+
+    return () => window.clearTimeout(hydrateTimeoutId);
+  }, [syncCartState]);
+
+  useEffect(() => {
+    if (!hasHydratedCart) {
+      return;
+    }
+
+    if (!cartItems.length) {
+      window.localStorage.removeItem(CART_STORAGE_KEY);
+      return;
+    }
+
+    window.localStorage.setItem(
+      CART_STORAGE_KEY,
+      JSON.stringify({ cartItems })
+    );
+  }, [cartItems, hasHydratedCart]);
 
   const onAdd = (product, quantity) => {
     setTotalPrice(
@@ -112,6 +190,7 @@ export const StateContext = ({ children }) => {
         setTotalPrice,
         setTotalQuantities,
         buildCurrentCart,
+        clearCart,
       }}
     >
       {children}
