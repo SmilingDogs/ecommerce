@@ -15,7 +15,6 @@ export async function POST(request) {
     );
   }
 
-  // Create the email component directly
   const emailComponent = (
     <OrderConfirmationEmail
       customerName={customerName}
@@ -28,9 +27,8 @@ export async function POST(request) {
   );
 
   try {
-    // Send email using Resend
     const result = await resend.emails.send({
-      from: 'onboarding@resend.dev', // Resend test domain (works without verification)
+      from: 'onboarding@resend.dev',
       to: customerEmail,
       subject: `Order Confirmation #${orderNumber}`,
       react: emailComponent,
