@@ -28,10 +28,10 @@ export default async function SuccessPage({ searchParams }) {
       line_items?.data?.map((item) => ({
         name: item.description || 'Product',
         quantity: item.quantity,
-        price: item.amount_total / 100, // Convert from cents to dollars
+        price: item.amount_total / 100,
       })) || [];
 
-    const total = session.amount_total / 100; // Convert from cents to dollars
+    const total = session.amount_total / 100;
     const orderNumber = session_id.substring(0, 12).toUpperCase();
     const orderDate = new Date().toLocaleDateString('en-US', {
       year: 'numeric',
@@ -39,7 +39,7 @@ export default async function SuccessPage({ searchParams }) {
       day: 'numeric',
     });
 
-    // Send confirmation email
+    //* Call the API to send an email with the order details
     try {
       await fetch(
         `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/send-email`,
